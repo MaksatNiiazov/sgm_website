@@ -59,6 +59,9 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="theme-color" content="#030303" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/brand-icon.svg" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
