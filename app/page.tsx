@@ -507,7 +507,9 @@ export default function Home() {
   const [videos, setVideos] = useState<(File | null)[]>([null]);
   const [legalAgeConfirmed, setLegalAgeConfirmed] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
-  const [validationError, setValidationError] = useState<"age" | "privacy" | null>(null);
+  const [validationError, setValidationError] = useState<
+    "personalAge" | "ageConsent" | "privacy" | null
+  >(null);
   const [status, setStatus] = useState<{
     type: "idle" | "working" | "success" | "error";
     message: string;
@@ -520,9 +522,10 @@ export default function Home() {
       return;
     }
 
-    const ageReady = Number(personal.age) >= 18 && legalAgeConfirmed;
+    const personalAgeReady = Number(personal.age) >= 18;
     const errorIsResolved =
-      (validationError === "age" && ageReady) ||
+      (validationError === "personalAge" && personalAgeReady) ||
+      (validationError === "ageConsent" && legalAgeConfirmed) ||
       (validationError === "privacy" && privacyAccepted);
 
     if (errorIsResolved) {
@@ -615,14 +618,28 @@ export default function Home() {
     setStatus({ type: "idle", message: "", progress: 0 });
     setValidationError(null);
 
-    if (Number(personal.age) < 18 || !legalAgeConfirmed) {
-      setValidationError("age");
+    if (Number(personal.age) < 18) {
+      setStep(0);
+      setValidationError("personalAge");
       setStatus({
         type: "error",
         message:
           language === "en"
-            ? "You must be 18+ and confirm age verification readiness."
-            : "Необходимо подтвердить возраст 18+ и готовность к проверке.",
+            ? "Enter your age in step 1. Applications are available only to candidates aged 18+."
+            : "Укажи возраст в первом шаге анкеты. Заявки принимаются только от кандидаток 18+.",
+        progress: 0,
+      });
+      return;
+    }
+
+    if (!legalAgeConfirmed) {
+      setValidationError("ageConsent");
+      setStatus({
+        type: "error",
+        message:
+          language === "en"
+            ? "Confirm that you are 18+ and ready to provide age verification if requested."
+            : "Подтверди, что тебе есть 18+ и ты готова предоставить подтверждение возраста по запросу.",
         progress: 0,
       });
       return;
@@ -964,6 +981,8 @@ export default function Home() {
                 </Field>
                 <Field label={t.labels.age}>
                   <input
+                    aria-invalid={validationError === "personalAge"}
+                    className={validationError === "personalAge" ? "input-error" : ""}
                     min="18"
                     required
                     type="number"
@@ -1119,9 +1138,9 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="file-summary">{fileSummary}</div>
-                <label className={`checkbox-line ${validationError === "age" ? "has-error" : ""}`}>
+                <label className={`checkbox-line ${validationError === "ageConsent" ? "has-error" : ""}`}>
                   <input
-                    aria-invalid={validationError === "age"}
+                    aria-invalid={validationError === "ageConsent"}
                     checked={legalAgeConfirmed}
                     onChange={(event) => setLegalAgeConfirmed(event.target.checked)}
                     type="checkbox"
