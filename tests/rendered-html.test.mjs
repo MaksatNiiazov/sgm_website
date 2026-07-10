@@ -14,7 +14,10 @@ test("Strawberry Glam Models source contains the finished site content", async (
   assert.match(page, /Exclusive Webcam Agency for Premium Clients/);
   assert.match(page, /Максимальная конфиденциальность/);
   assert.match(page, /Relocation Program/);
-  assert.match(page, /Upload 8-15 high-quality photos/);
+  assert.match(page, /There is no required number of files at this stage/);
+  assert.match(page, /Selected applicants may be eligible for practical equipment or living support/);
+  assert.match(page, /role=\{status\.type === "error" \? "alert" : "status"\}/);
+  assert.match(css, /\.form-status\.error \{/);
   assert.match(css, /strawberry-glam-brand-card\.png/);
   assert.doesNotMatch(
     `${page}\n${layout}\n${packageJson}`,

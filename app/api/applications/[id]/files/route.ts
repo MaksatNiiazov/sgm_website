@@ -66,19 +66,6 @@ export async function POST(
       return Response.json({ error: "Application not found." }, { status: 404 });
     }
 
-    const existing = await db
-      .prepare("SELECT COUNT(*) AS count FROM application_files WHERE application_id = ? AND kind = ?")
-      .bind(applicationId, kind)
-      .first<{ count: number }>();
-    const existingCount = Number(existing?.count ?? 0);
-
-    if ((kind === "photo" && existingCount >= 15) || (kind === "video" && existingCount >= 5)) {
-      return Response.json(
-        { error: `Maximum ${kind} upload count reached.` },
-        { status: 400 }
-      );
-    }
-
     const fileId = crypto.randomUUID();
     const fileName = cleanFileName(request.headers.get("x-file-name") ?? `${kind}-${fileId}`);
     const r2Key = `applications/${applicationId}/${fileId}-${fileName}`;

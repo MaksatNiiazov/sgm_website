@@ -46,13 +46,6 @@ export async function PATCH(
     const photoCount = Number(counts?.photo_count ?? 0);
     const videoCount = Number(counts?.video_count ?? 0);
 
-    if (photoCount < 8 || photoCount > 15 || videoCount < 2 || videoCount > 5) {
-      return Response.json(
-        { error: "Portfolio must include 8-15 photos and 2-5 videos." },
-        { status: 400 }
-      );
-    }
-
     await db
       .prepare(
         "UPDATE applications SET status = 'submitted', submitted_at = CURRENT_TIMESTAMP WHERE id = ?"

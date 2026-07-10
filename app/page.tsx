@@ -1,10 +1,79 @@
-/* eslint-disable @next/next/no-html-link-for-pages */
 "use client";
 
-import { type FormEvent, type ReactNode, useMemo, useState } from "react";
+import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 type Language = "en" | "ru";
 type Step = 0 | 1 | 2;
+
+const supportedLanguages = new Set<Language>(["en", "ru"]);
+
+const languageChangeEvent = "sgm-language-change";
+
+function getBrowserLanguageSnapshot(): Language {
+  if (typeof window === "undefined") {
+    return "en";
+  }
+
+  const queryLanguage = new URLSearchParams(window.location.search).get("lang");
+  if (supportedLanguages.has(queryLanguage as Language)) {
+    return queryLanguage as Language;
+  }
+
+  const storedLanguage = window.localStorage.getItem("sgm-language");
+  if (supportedLanguages.has(storedLanguage as Language)) {
+    return storedLanguage as Language;
+  }
+
+  return "en";
+}
+
+function getServerLanguageSnapshot(): Language {
+  return "en";
+}
+
+function subscribeLanguage(onStoreChange: () => void) {
+  if (typeof window === "undefined") {
+    return () => undefined;
+  }
+
+  window.addEventListener("popstate", onStoreChange);
+  window.addEventListener("storage", onStoreChange);
+  window.addEventListener(languageChangeEvent, onStoreChange);
+
+  return () => {
+    window.removeEventListener("popstate", onStoreChange);
+    window.removeEventListener("storage", onStoreChange);
+    window.removeEventListener(languageChangeEvent, onStoreChange);
+  };
+}
+
+function usePersistentLanguage() {
+  return useSyncExternalStore(subscribeLanguage, getBrowserLanguageSnapshot, getServerLanguageSnapshot);
+}
+
+function withLanguage(href: string, language: Language) {
+  const [target, hash] = href.split("#");
+  const [pathname = "/", search = ""] = (target || "/").split("?");
+  const params = new URLSearchParams(search);
+  params.set("lang", language);
+  return `${pathname}?${params.toString()}${hash ? `#${hash}` : ""}`;
+}
+
+function updateCurrentUrlLanguage(language: Language) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const url = new URL(window.location.href);
+  url.searchParams.set("lang", language);
+  window.history.replaceState(null, "", `${url.pathname}?${url.searchParams.toString()}${url.hash}`);
+  window.localStorage.setItem("sgm-language", language);
+}
+
+function setLanguagePreference(language: Language) {
+  updateCurrentUrlLanguage(language);
+  window.dispatchEvent(new Event(languageChangeEvent));
+}
 
 type Personal = {
   fullName: string;
@@ -81,19 +150,24 @@ const content = {
     storiesTitle: "Success Stories",
     stories: [
       {
-        name: "M., Europe",
-        copy: "Joined with no studio background and built a premium schedule after training, lighting guidance and private positioning.",
-        stat: "$8,400 NZD/mo",
+        name: "Aigerim, Kazakhstan",
+        copy: "Started from Almaty with a modest home setup, then rebuilt her portfolio, upgraded lighting and moved into a premium schedule. Within her first strong year, she helped her parents with a home purchase and created a private savings reserve.",
+        stat: "Home for parents",
       },
       {
-        name: "A., South America",
-        copy: "Moved from inconsistent platform income to a managed subscription audience with stronger safety boundaries.",
-        stat: "4 weeks to offer",
+        name: "Mila, Russia",
+        copy: "Came from inconsistent platform work and wanted serious management, stronger privacy and higher-value clients. After repositioning, she built enough income to buy her own apartment and stop depending on unstable side work.",
+        stat: "Own apartment",
       },
       {
-        name: "K., Asia-Pacific",
-        copy: "Qualified for relocation review after sustained performance and professional portfolio updates.",
-        stat: "Relocation track",
+        name: "Ani, Armenia",
+        copy: "Submitted a small portfolio first, then followed a stricter presentation plan and became one of the profiles reviewed for Australia. Her relocation path gave her a calmer routine, covered living support and a more ambitious professional environment.",
+        stat: "Australia move",
+      },
+      {
+        name: "D., Georgia",
+        copy: "Started with flexible evening availability and a private workspace. With schedule discipline and careful coaching, she moved from short-term income goals to buying a car, supporting family expenses and feeling financially independent.",
+        stat: "Car and freedom",
       },
     ],
     formTitle: "Private Model Application",
@@ -107,8 +181,8 @@ const content = {
       email: "Email",
       messenger: "Telegram / WhatsApp",
       timezone: "Time zone",
-      photos: "Upload 8-15 high-quality photos",
-      videos: "Upload 2-5 videos",
+      photos: "Add high-quality photos",
+      videos: "Add short videos",
       ageConsent: "I confirm that I am 18+ and can provide age verification.",
       privacy:
         "I agree that Strawberry Glam Models may securely review my application materials.",
@@ -129,7 +203,9 @@ const content = {
       additionalInfo: "Any additional information you want us to know?",
     },
     portfolioHint:
-      "The more professional, high-quality and open your materials are, the faster and better our offer will be.",
+      "There is no required number of files at this stage. Send the photos and videos you are comfortable sharing for a first review. Stronger, more distinctive and better-presented content helps the team understand your potential and may lead to a more relevant offer. This is a selective review process, so applications are assessed individually rather than accepted automatically.",
+    portfolioSupport:
+      "Selected applicants may be eligible for practical equipment or living support. The full approach and eligibility criteria are explained in our model support guide.",
     next: "Next",
     back: "Back",
     submit: "Submit Application",
@@ -171,6 +247,16 @@ const content = {
       "Privacy policy: application data and files are used only to evaluate model suitability, protect safety, and contact applicants. Materials are not sold or published without explicit consent.",
     footerAge:
       "18+ only. Strawberry Glam Models works exclusively with adults who can provide valid age verification.",
+    footerSupport:
+      "Support: for private questions about applications, portfolio materials or the review process, contact strawberry.glam.models@gmail.com.",
+    footerTagline:
+      "Private international representation for adult models working with a curated premium audience in New Zealand and Australia.",
+    footerContactTitle: "Private support",
+    footerLegalTitle: "Standards",
+    footerTrustTitle: "Operating principles",
+    footerTrust: ["Confidential review", "Controlled media access", "18+ verification", "Consent-led communication"],
+    footerBottom:
+      "Strawberry Glam Models reviews adult applications privately. Earnings, offers and relocation opportunities depend on individual profile, consistency and review outcome.",
   },
   ru: {
     nav: ["Приватность", "Стандарты", "Релокация", "FAQ"],
@@ -202,19 +288,24 @@ const content = {
     storiesTitle: "Истории успеха",
     stories: [
       {
-        name: "М., Европа",
-        copy: "Пришла без студийного опыта и выстроила премиальный график после обучения, настройки света и приватного позиционирования.",
-        stat: "$8,400 NZD/мес",
+        name: "Айгерим, Казахстан",
+        copy: "Начала из Алматы с обычного домашнего сетапа, затем пересобрала портфолио, улучшила свет и вышла на премиальный график. За первый сильный год помогла родителям с покупкой дома и сформировала личный финансовый резерв.",
+        stat: "Дом для родителей",
       },
       {
-        name: "А., Южная Америка",
-        copy: "Перешла от нестабильного дохода на платформах к управляемой подписочной аудитории и более сильным границам безопасности.",
-        stat: "4 недели до оффера",
+        name: "Мила, Россия",
+        copy: "Пришла после нестабильной работы на платформах: ей были нужны серьёзный менеджмент, приватность и более дорогая аудитория. После перепозиционирования она заработала на собственную квартиру и перестала зависеть от случайных подработок.",
+        stat: "Своя квартира",
       },
       {
-        name: "К., Азиатско-Тихоокеанский регион",
-        copy: "Попала на трек релокации после стабильных результатов и профессионального обновления портфолио.",
-        stat: "Трек релокации",
+        name: "Ани, Армения",
+        copy: "Сначала отправила небольшое портфолио, затем прошла более строгий план подачи и попала в пул кандидаток на Австралию. Релокационный трек дал ей спокойный быт, покрытие основных расходов и более амбициозную профессиональную среду.",
+        stat: "Переезд в Австралию",
+      },
+      {
+        name: "Д., Грузия",
+        copy: "Начала с вечерней доступности и приватного рабочего пространства. Благодаря дисциплине графика и аккуратному сопровождению перешла от краткосрочных целей к покупке машины, поддержке семьи и ощущению финансовой свободы.",
+        stat: "Машина и свобода",
       },
     ],
     formTitle: "Приватная заявка модели",
@@ -228,8 +319,8 @@ const content = {
       email: "Email",
       messenger: "Telegram / WhatsApp",
       timezone: "Часовой пояс",
-      photos: "Загрузи 8-15 качественных фото",
-      videos: "Загрузи 2-5 видео",
+      photos: "Добавь качественные фотографии",
+      videos: "Добавь короткие видео",
       ageConsent:
         "Я подтверждаю, что мне 18+ и я могу предоставить подтверждение возраста.",
       privacy:
@@ -252,7 +343,9 @@ const content = {
       additionalInfo: "Что ещё ты хочешь нам рассказать?",
     },
     portfolioHint:
-      "Чем качественнее и откровеннее будут твои фото и видео — тем быстрее и выгоднее будет наше предложение.",
+      "На этом этапе нет обязательного количества файлов. Отправь столько фотографий и видео, сколько считаешь комфортным для первого рассмотрения. Чем интереснее, качественнее и профессиональнее будет материал, тем лучше команда сможет оценить твой потенциал и подготовить релевантное предложение. Отбор индивидуальный: заявка не означает автоматического принятия.",
+    portfolioSupport:
+      "Для отдельных кандидаток может быть доступна практическая поддержка с оборудованием или условиями проживания. Полный подход и критерии рассмотрения описаны в гайде по поддержке моделей.",
     next: "Далее",
     back: "Назад",
     submit: "Отправить заявку",
@@ -294,6 +387,16 @@ const content = {
       "Политика конфиденциальности: данные и файлы заявки используются только для оценки профиля, защиты безопасности и связи с кандидатом. Материалы не продаются и не публикуются без отдельного согласия.",
     footerAge:
       "Только 18+. Strawberry Glam Models работает исключительно с совершеннолетними, которые могут подтвердить возраст.",
+    footerSupport:
+      "Поддержка: по приватным вопросам о заявке, портфолио или процессе рассмотрения напишите на strawberry.glam.models@gmail.com.",
+    footerTagline:
+      "Приватное международное представительство для совершеннолетних моделей, работающих с закрытой премиум-аудиторией Новой Зеландии и Австралии.",
+    footerContactTitle: "Приватная поддержка",
+    footerLegalTitle: "Стандарты",
+    footerTrustTitle: "Принципы работы",
+    footerTrust: ["Конфиденциальное рассмотрение", "Контролируемый доступ к медиа", "Проверка 18+", "Коммуникация через согласие"],
+    footerBottom:
+      "Strawberry Glam Models приватно рассматривает заявки совершеннолетних кандидатов. Доход, офферы и релокация зависят от профиля, стабильности и результата рассмотрения.",
   },
 };
 
@@ -315,7 +418,37 @@ const relocationSupportLinks = [
   "/info/expenses-support",
   "/info/management-support",
 ];
-const applicationStatLinks = ["/info/portfolio-guide", "/info/video-guide", "/info/nda"];
+
+const applicationRequirements = {
+  en: [
+    {
+      title: "Portfolio photos",
+      copy: "Send the photos you feel comfortable sharing. Clear lighting, a clean background and confident presentation help us see your potential.",
+    },
+    {
+      title: "Short videos",
+      copy: "One or several short videos can help us understand your camera presence, movement, voice and natural confidence.",
+    },
+    {
+      title: "NDA review",
+      copy: "Applications are handled privately by a limited review team under strict confidentiality standards.",
+    },
+  ],
+  ru: [
+    {
+      title: "Фотографии для портфолио",
+      copy: "Отправь те фото, которыми тебе комфортно поделиться. Чистый свет, аккуратный фон и уверенная подача помогают увидеть твой потенциал.",
+    },
+    {
+      title: "Короткие видео",
+      copy: "Одно или несколько коротких видео помогут понять твою работу в кадре, движение, голос и естественную уверенность.",
+    },
+    {
+      title: "NDA-проверка",
+      copy: "Заявки рассматриваются приватно ограниченной командой по строгим стандартам конфиденциальности.",
+    },
+  ],
+};
 
 const detailCards = {
   en: [
@@ -334,6 +467,11 @@ const detailCards = {
       copy: "What a strong portfolio includes and how review decisions are made.",
       href: "/info/application-process",
     },
+    {
+      title: "Relocation program",
+      copy: "How Australia relocation support can work for qualified top models.",
+      href: "/info/relocation-program",
+    },
   ],
   ru: [
     {
@@ -351,16 +489,22 @@ const detailCards = {
       copy: "Что входит в сильное портфолио и как проходит рассмотрение.",
       href: "/info/application-process",
     },
+    {
+      title: "Программа релокации",
+      copy: "Как может работать релокация в Австралию для подходящих топ-моделей.",
+      href: "/info/relocation-program",
+    },
   ],
 };
 
 export default function Home() {
-  const [language, setLanguage] = useState<Language>("en");
+  const language = usePersistentLanguage();
+  const didHydrateLanguage = useRef(false);
   const [step, setStep] = useState<Step>(0);
   const [personal, setPersonal] = useState<Personal>(initialPersonal);
   const [answers, setAnswers] = useState<Answers>(initialAnswers);
-  const [photos, setPhotos] = useState<File[]>([]);
-  const [videos, setVideos] = useState<File[]>([]);
+  const [photos, setPhotos] = useState<(File | null)[]>([null]);
+  const [videos, setVideos] = useState<(File | null)[]>([null]);
   const [legalAgeConfirmed, setLegalAgeConfirmed] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [status, setStatus] = useState<{
@@ -371,10 +515,45 @@ export default function Home() {
 
   const t = content[language];
 
+  useEffect(() => {
+    if (!didHydrateLanguage.current) {
+      didHydrateLanguage.current = true;
+      return;
+    }
+
+    updateCurrentUrlLanguage(language);
+  }, [language]);
+
+  function changeLanguage(nextLanguage: Language) {
+    setLanguagePreference(nextLanguage);
+  }
+
+  const selectedPhotos = useMemo(() => photos.filter((file): file is File => Boolean(file)), [photos]);
+  const selectedVideos = useMemo(() => videos.filter((file): file is File => Boolean(file)), [videos]);
+  const visiblePhotoInputs = photos.length;
+  const visibleVideoInputs = videos.length;
+
   const fileSummary = useMemo(() => {
-    const total = [...photos, ...videos].reduce((sum, file) => sum + file.size, 0);
-    return `${photos.length} photos • ${videos.length} videos • ${formatBytes(total)}`;
-  }, [photos, videos]);
+    const total = [...selectedPhotos, ...selectedVideos].reduce((sum, file) => sum + file.size, 0);
+    return `${selectedPhotos.length} photos • ${selectedVideos.length} videos • ${formatBytes(total)}`;
+  }, [selectedPhotos, selectedVideos]);
+
+  function updatePortfolioFile(kind: "photo" | "video", index: number, file: File | null) {
+    const update = (current: (File | null)[]) => {
+      const next = current.map((item, itemIndex) => (itemIndex === index ? file : item));
+      if (file && index === current.length - 1) {
+        next.push(null);
+      }
+      return next;
+    };
+
+    if (kind === "photo") {
+      setPhotos(update);
+      return;
+    }
+
+    setVideos(update);
+  }
 
   function updatePersonal(key: keyof Personal, value: string) {
     setPersonal((current) => ({ ...current, [key]: value }));
@@ -431,18 +610,6 @@ export default function Home() {
       return;
     }
 
-    if (photos.length < 8 || photos.length > 15 || videos.length < 2 || videos.length > 5) {
-      setStatus({
-        type: "error",
-        message:
-          language === "en"
-            ? "Please upload 8-15 photos and 2-5 videos."
-            : "Загрузи 8-15 фото и 2-5 видео.",
-        progress: 0,
-      });
-      return;
-    }
-
     try {
       setStatus({ type: "working", message: t.submitting, progress: 5 });
       const createResponse = await fetch("/api/applications", {
@@ -464,8 +631,8 @@ export default function Home() {
 
       const applicationId = createPayload.applicationId as string;
       const uploads = [
-        ...photos.map((file) => ({ file, kind: "photo" })),
-        ...videos.map((file) => ({ file, kind: "video" })),
+        ...selectedPhotos.map((file) => ({ file, kind: "photo" })),
+        ...selectedVideos.map((file) => ({ file, kind: "video" })),
       ];
 
       for (let index = 0; index < uploads.length; index += 1) {
@@ -519,44 +686,38 @@ export default function Home() {
   return (
     <main className="site-shell">
       <header className="topbar">
-        <a className="brand-lockup" href="#top" aria-label="Strawberry Glam Models">
-          <span className="brand-mark">SGM</span>
+        <a className="brand-lockup" href={withLanguage("#top", language)} aria-label="Strawberry Glam Models">
+          <span className="brand-mark" aria-hidden="true" />
           <span className="brand-name">
             <strong>Strawberry</strong>
             <small>Glam Models</small>
           </span>
         </a>
         <nav aria-label="Primary navigation">
-          {t.nav.map((item, index) =>
-            navTargets[index].startsWith("/") ? (
-              <a href={navTargets[index]} key={item}>
-                {item}
-              </a>
-            ) : (
-              <a href={navTargets[index]} key={item}>
-                {item}
-              </a>
-            )
-          )}
+          {t.nav.map((item, index) => (
+            <a href={withLanguage(navTargets[index], language)} key={item}>
+              {item}
+            </a>
+          ))}
         </nav>
         <div className="topbar-actions">
           <div className="language-switch" aria-label="Language switcher">
             <button
               className={language === "en" ? "active" : ""}
               type="button"
-              onClick={() => setLanguage("en")}
+              onClick={() => changeLanguage("en")}
             >
               EN
             </button>
             <button
               className={language === "ru" ? "active" : ""}
               type="button"
-              onClick={() => setLanguage("ru")}
+              onClick={() => changeLanguage("ru")}
             >
               RU
             </button>
           </div>
-          <a className="nav-cta" href="#apply">
+          <a className="nav-cta" href={withLanguage("#apply", language)}>
             {t.apply}
           </a>
         </div>
@@ -573,21 +734,21 @@ export default function Home() {
           <p className="hero-subtitle">{t.heroSub}</p>
           <p className="hero-text">{t.heroText}</p>
           <div className="hero-proof" aria-label="Key standards">
-            <a href="/info/privacy">
+            <a href={withLanguage("/info/privacy", language)}>
               {language === "en" ? "Confidential review" : "Конфиденциальный разбор"}
             </a>
-            <a href="/info/premium-clients">
+            <a href={withLanguage("/info/premium-clients", language)}>
               {language === "en" ? "Closed subscriber audience" : "Закрытая подписочная аудитория"}
             </a>
-            <a href="/info/relocation-program">
+            <a href={withLanguage("/info/relocation-program", language)}>
               {language === "en" ? "Australia relocation track" : "Трек релокации в Австралию"}
             </a>
           </div>
           <div className="hero-actions">
-            <a className="primary-button" href="#apply">
+            <a className="primary-button" href={withLanguage("#apply", language)}>
               {t.heroButton}
             </a>
-            <a className="secondary-button" href="/info/privacy">
+            <a className="secondary-button" href={withLanguage("/info/privacy", language)}>
               {language === "en" ? "Privacy standards" : "Стандарты приватности"}
             </a>
           </div>
@@ -596,20 +757,29 @@ export default function Home() {
 
       <section className="trust-band" id="safety">
         <div className="section-inner trust-grid">
-          <div>
+          <div className="trust-copy">
             <p className="eyebrow">
               {language === "en" ? "Trust & Safety" : "Доверие и безопасность"}
             </p>
             <h2>{t.trustTitle}</h2>
+            <p className="trust-text">{t.trust}</p>
+            <div className="trust-points">
+              {t.trustPoints.map((point, index) => (
+                <a href={withLanguage(trustPointLinks[index], language)} key={point}>
+                  {point}
+                </a>
+              ))}
+            </div>
           </div>
-          <p>{t.trust}</p>
-          <div className="trust-points">
-            {t.trustPoints.map((point, index) => (
-              <a href={trustPointLinks[index]} key={point}>
-                {point}
-              </a>
-            ))}
-          </div>
+          <div
+            aria-label={
+              language === "en"
+                ? "Black satin and sealed envelope privacy visual"
+                : "Визуал приватности: чёрный сатин и запечатанный конверт"
+            }
+            className="trust-visual"
+            role="img"
+          />
         </div>
       </section>
 
@@ -623,7 +793,7 @@ export default function Home() {
           </div>
           <div className="benefit-grid">
             {t.why.map((item, index) => (
-              <a className="benefit-card" href={benefitLinks[index]} key={item}>
+              <a className="benefit-card" href={withLanguage(benefitLinks[index], language)} key={item}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <p>{item}</p>
                 <small>{language === "en" ? "Read details" : "Подробнее"}</small>
@@ -643,7 +813,7 @@ export default function Home() {
           </div>
           <div>
             <p>{t.clientsText}</p>
-            <a className="inline-link" href="/info/client-standards">
+            <a className="inline-link" href={withLanguage("/info/client-standards", language)}>
               {language === "en" ? "Read client standards" : "Открыть стандарты аудитории"}
             </a>
           </div>
@@ -651,21 +821,32 @@ export default function Home() {
       </section>
 
       <section className="relocation-band" id="relocation">
-        <div className="section-inner relocation-content">
-          <p className="eyebrow">
-            {language === "en" ? "Australia Head Office" : "Головной офис в Австралии"}
-          </p>
-          <h2>{t.relocationTitle}</h2>
-          <p>{t.relocation}</p>
-          <div className="relocation-list" aria-label="Relocation support">
-            {["Housing", "Meals", "Main expenses", "Management"].map((item, index) => (
-              <a href={relocationSupportLinks[index]} key={item}>
-                {language === "en"
-                  ? item
-                  : ["Жильё", "Питание", "Основные расходы", "Менеджмент"][index]}
-              </a>
-            ))}
+        <div className="section-inner relocation-layout">
+          <div className="relocation-content">
+            <p className="eyebrow">
+              {language === "en" ? "Australia Head Office" : "Головной офис в Австралии"}
+            </p>
+            <h2>{t.relocationTitle}</h2>
+            <p>{t.relocation}</p>
+            <div className="relocation-list" aria-label="Relocation support">
+              {["Housing", "Meals", "Main expenses", "Management"].map((item, index) => (
+                <a href={withLanguage(relocationSupportLinks[index], language)} key={item}>
+                  {language === "en"
+                    ? item
+                    : ["Жильё", "Питание", "Основные расходы", "Менеджмент"][index]}
+                </a>
+              ))}
+            </div>
           </div>
+          <div
+            aria-label={
+              language === "en"
+                ? "Australia relocation mood visual with premium travel tag"
+                : "Визуал релокации в Австралию с премиальным travel tag"
+            }
+            className="relocation-visual"
+            role="img"
+          />
         </div>
       </section>
 
@@ -679,7 +860,7 @@ export default function Home() {
           </div>
           <div className="story-grid">
             {t.stories.map((story) => (
-              <a className="story-card" href="/info/success-stories" key={story.name}>
+              <a className="story-card" href={withLanguage("/info/success-stories", language)} key={story.name}>
                 <strong>{story.stat}</strong>
                 <p>{story.copy}</p>
                 <span>{story.name}</span>
@@ -693,13 +874,13 @@ export default function Home() {
         <div className="section-inner details-layout">
           <div>
             <p className="eyebrow">
-              {language === "en" ? "Prepared Information" : "Подготовленная информация"}
+              {language === "en" ? "Candidate Information" : "Информация для кандидатов"}
             </p>
             <h2>{language === "en" ? "Clear answers before you apply" : "Подробности перед заявкой"}</h2>
           </div>
           <div className="resource-grid">
             {detailCards[language].map((card) => (
-              <a className="resource-card" href={card.href} key={card.href}>
+              <a className="resource-card" href={withLanguage(card.href, language)} key={card.href}>
                 <span>{card.title}</span>
                 <p>{card.copy}</p>
               </a>
@@ -717,12 +898,11 @@ export default function Home() {
             <h2>{t.formTitle}</h2>
             <p>{t.formLead}</p>
             <div className="application-stats">
-              {["8-15 photos", "2-5 videos", "NDA review"].map((item, index) => (
-                <a href={applicationStatLinks[index]} key={item}>
-                  {language === "en"
-                    ? item
-                    : ["8-15 фото", "2-5 видео", "NDA-проверка"][index]}
-                </a>
+              {applicationRequirements[language].map((item) => (
+                <div className="application-stat-card" key={item.title}>
+                  <strong>{item.title}</strong>
+                  <span>{item.copy}</span>
+                </div>
               ))}
             </div>
           </div>
@@ -838,25 +1018,74 @@ export default function Home() {
             {step === 2 && (
               <div className="portfolio-panel">
                 <p>{t.portfolioHint}</p>
+                <div className="portfolio-support">
+                  <strong>{language === "en" ? "Practical support for selected applicants" : "Практическая поддержка для отдельных кандидаток"}</strong>
+                  <p>{t.portfolioSupport}</p>
+                  <a className="text-link" href={withLanguage("/info/model-support", language)}>
+                    {language === "en" ? "Read the model support guide" : "Открыть гайд по поддержке моделей"}
+                  </a>
+                </div>
                 <div className="upload-grid">
-                  <Field label={t.labels.photos}>
-                    <input
-                      accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
-                      multiple
-                      required
-                      type="file"
-                      onChange={(event) => setPhotos(Array.from(event.target.files ?? []))}
-                    />
-                  </Field>
-                  <Field label={t.labels.videos}>
-                    <input
-                      accept="video/mp4,video/quicktime,video/webm"
-                      multiple
-                      required
-                      type="file"
-                      onChange={(event) => setVideos(Array.from(event.target.files ?? []))}
-                    />
-                  </Field>
+                  <div className="upload-set">
+                    <span>{t.labels.photos}</span>
+                    <div className="single-upload-grid">
+                      {photos.slice(0, visiblePhotoInputs).map((file, index) => (
+                        <label
+                          className={`single-upload ${file ? "filled" : "pending"}`}
+                          key={`photo-${index + 1}`}
+                        >
+                          <span>{language === "en" ? `Photo ${index + 1}` : `Фото ${index + 1}`}</span>
+                          <input
+                            accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+                            type="file"
+                            onChange={(event) =>
+                              updatePortfolioFile("photo", index, event.target.files?.[0] ?? null)
+                            }
+                          />
+                          <em>
+                            {file
+                              ? language === "en"
+                                ? "Uploaded"
+                                : "Загружено"
+                              : language === "en"
+                                ? "Next slot"
+                                : "Новое поле"}
+                          </em>
+                          <small>{file?.name ?? (language === "en" ? "No file selected" : "Файл не выбран")}</small>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="upload-set">
+                    <span>{t.labels.videos}</span>
+                    <div className="single-upload-grid video-upload-grid">
+                      {videos.slice(0, visibleVideoInputs).map((file, index) => (
+                        <label
+                          className={`single-upload ${file ? "filled" : "pending"}`}
+                          key={`video-${index + 1}`}
+                        >
+                          <span>{language === "en" ? `Video ${index + 1}` : `Видео ${index + 1}`}</span>
+                          <input
+                            accept="video/mp4,video/quicktime,video/webm"
+                            type="file"
+                            onChange={(event) =>
+                              updatePortfolioFile("video", index, event.target.files?.[0] ?? null)
+                            }
+                          />
+                          <em>
+                            {file
+                              ? language === "en"
+                                ? "Uploaded"
+                                : "Загружено"
+                              : language === "en"
+                                ? "Next slot"
+                                : "Новое поле"}
+                          </em>
+                          <small>{file?.name ?? (language === "en" ? "No file selected" : "Файл не выбран")}</small>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
                 </div>
                 <div className="file-summary">{fileSummary}</div>
                 <label className="checkbox-line">
@@ -879,7 +1108,11 @@ export default function Home() {
             )}
 
             {status.type !== "idle" && (
-              <div className={`form-status ${status.type}`}>
+              <div
+                className={`form-status ${status.type}`}
+                role={status.type === "error" ? "alert" : "status"}
+                aria-live="polite"
+              >
                 <div>
                   <span>{status.message}</span>
                   {status.type === "working" && (
@@ -943,21 +1176,46 @@ export default function Home() {
       </section>
 
       <footer>
-        <div className="section-inner footer-grid">
-          <div>
-            <span className="brand-mark">SGM</span>
-            <h2>Strawberry Glam Models</h2>
+        <div className="section-inner footer-shell">
+          <div className="footer-grid">
+            <div className="footer-brand">
+              <span className="brand-mark" aria-hidden="true" />
+              <h2>Strawberry Glam Models</h2>
+              <p>{t.footerTagline}</p>
+            </div>
+
+            <div className="footer-column">
+              <h3>{t.footerLegalTitle}</h3>
+              <a className="text-link" href={withLanguage("/info/privacy", language)}>
+                {t.footerPrivacy}
+              </a>
+              <a className="text-link" href={withLanguage("/info/age-verification", language)}>
+                {t.footerAge}
+              </a>
+            </div>
+
+            <div className="footer-column">
+              <h3>{t.footerContactTitle}</h3>
+              <a className="footer-email" href="mailto:strawberry.glam.models@gmail.com">
+                strawberry.glam.models@gmail.com
+              </a>
+              <p>{t.footerSupport}</p>
+            </div>
+
+            <div className="footer-column footer-principles">
+              <h3>{t.footerTrustTitle}</h3>
+              <ul>
+                {t.footerTrust.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <p>
-            <a className="text-link" href="/info/privacy">
-              {t.footerPrivacy}
-            </a>
-          </p>
-          <p>
-            <a className="text-link" href="/info/age-verification">
-              {t.footerAge}
-            </a>
-          </p>
+
+          <div className="footer-bottom">
+            <span>{t.footerBottom}</span>
+            <span>© 2026 Strawberry Glam Models</span>
+          </div>
         </div>
       </footer>
     </main>

@@ -1,0 +1,27 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "strawberry-glam-models",
+  "main": "dist/server/index.js",
+  "compatibility_date": "2026-07-10",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "dist/client",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "strawberry-glam-models-db",
+      "database_id": "51729720-dcdb-4869-8b1e-402511de2603"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "strawberry-glam-models-media"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}
