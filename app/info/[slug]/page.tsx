@@ -203,12 +203,16 @@ export const infoPages: Record<string, InfoPage> = {
     ruIntro:
       "Высокий доход не выдаётся автоматически — он строится. Быстрее всего растут модели, которые соединяют запоминающийся профиль, стабильный ритм, сильную коммуникацию и готовность усиливаться с обратной связью опытной команды.",
     points: [
+      "The platform retains 40% of revenue and the model receives 60% of the revenue generated through her work.",
+      "For selected top-performing models, the platform share may be reduced to 30% under an individual written agreement.",
       "Up to $12,000+ NZD/month reflects the upper potential of exceptional, consistent profiles; your personal offer is always based on your actual starting point and fit.",
       "A polished portfolio, reliable schedule and clear comfort boundaries help you build trust with the right audience.",
       "Managers focus on practical levers: lighting, presentation, content planning, positioning and consistency.",
       "The more honestly you show your availability and potential, the more relevant and useful the first review can be.",
     ],
     ruPoints: [
+      "Платформа удерживает 40% выручки, а модель получает 60% дохода, созданного в рамках её работы.",
+      "Для отдельных топ-моделей доля платформы может быть снижена до 30% по индивидуальному письменному соглашению.",
       "До $12,000+ NZD в месяц — это верхний потенциал исключительных стабильных профилей; твой личный оффер всегда строится от реальной стартовой точки и соответствия формату.",
       "Сильное портфолио, надёжный график и понятные границы комфорта помогают выстроить доверие с правильной аудиторией.",
       "Менеджеры работают с тем, что реально влияет на результат: светом, подачей, планом контента, позиционированием и регулярностью.",
