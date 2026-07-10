@@ -515,8 +515,6 @@ export default function Home() {
   }>({ type: "idle", message: "", progress: 0 });
 
   const t = content[language];
-  const consentReady = Number(personal.age) >= 18 && legalAgeConfirmed && privacyAccepted;
-
   useEffect(() => {
     if (status.type !== "error") {
       return;
