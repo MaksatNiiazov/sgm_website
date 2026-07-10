@@ -15,7 +15,7 @@ test("Strawberry Glam Models source contains the finished site content", async (
   assert.match(page, /Максимальная конфиденциальность/);
   assert.match(page, /Relocation Program/);
   assert.match(page, /Upload 8-15 high-quality photos/);
-  assert.match(css, /hero-strawberry\.jpg/);
+  assert.match(css, /strawberry-glam-brand-card\.png/);
   assert.doesNotMatch(
     `${page}\n${layout}\n${packageJson}`,
     /codex-preview|react-loading-skeleton|Your site is taking shape|Starter Project/i,

@@ -52,7 +52,7 @@ const initialAnswers: Answers = {
 
 const content = {
   en: {
-    nav: ["Safety", "Why us", "Relocation", "FAQ"],
+    nav: ["Privacy", "Standards", "Relocation", "FAQ"],
     apply: "Apply Now",
     heroSub:
       "Exclusive Webcam Agency for Premium Clients from New Zealand & Australia",
@@ -62,7 +62,7 @@ const content = {
     trustTitle: "Safety-first private representation",
     trust:
       "Your safety and privacy are our top priority. All data is strictly confidential. We use NDA agreements and advanced security measures to protect both models and clients.",
-    trustPoints: ["NDA protected", "Encrypted storage", "18+ verified"],
+    trustPoints: ["NDA protocol", "Private media vault", "Verified 18+ only"],
     whyTitle: "Why Choose Strawberry Glam",
     why: [
       "Work with a narrow, high-paying premium audience from NZ & Australia",
@@ -158,6 +158,14 @@ const content = {
         "What happens after I apply?",
         "After your application and portfolio are received, the review team checks your materials, safety readiness, age confirmation and fit for the premium audience. If your profile is suitable, we contact you privately with next steps, recommendations and a potential offer. The process is designed to be discreet, fast and respectful.",
       ],
+      [
+        "Will I receive guidance before starting?",
+        "Yes. Strong applicants are not left to figure everything out alone. We can help with portfolio presentation, lighting, schedule planning, privacy boundaries, communication style and practical preparation. The aim is to make the first steps feel clear, premium and professionally supported.",
+      ],
+      [
+        "Is relocation guaranteed?",
+        "Relocation is not automatic, and that is what keeps the program valuable. It is reserved for models who show consistency, professionalism, strong audience fit and readiness for a more structured environment. When a model qualifies, the offer is prepared carefully so housing, meals and main expenses can be handled in an organized way.",
+      ],
     ],
     footerPrivacy:
       "Privacy policy: application data and files are used only to evaluate model suitability, protect safety, and contact applicants. Materials are not sold or published without explicit consent.",
@@ -165,7 +173,7 @@ const content = {
       "18+ only. Strawberry Glam Models works exclusively with adults who can provide valid age verification.",
   },
   ru: {
-    nav: ["Безопасность", "Почему мы", "Релокация", "FAQ"],
+    nav: ["Приватность", "Стандарты", "Релокация", "FAQ"],
     apply: "Подать заявку",
     heroSub:
       "Эксклюзивное вебкам-агентство для премиум-клиентов из Новой Зеландии и Австралии",
@@ -175,7 +183,7 @@ const content = {
     trustTitle: "Приватное сопровождение с приоритетом безопасности",
     trust:
       "Ваша безопасность и конфиденциальность — наш главный приоритет. Все данные строго защищены. Мы используем соглашения NDA и современные меры безопасности.",
-    trustPoints: ["Защита NDA", "Защищённое хранение", "Проверка 18+"],
+    trustPoints: ["NDA-протокол", "Приватное хранение медиа", "Только проверка 18+"],
     whyTitle: "Почему выбирают Strawberry Glam",
     why: [
       "Работа с узкой платёжеспособной премиум-аудиторией из Новой Зеландии и Австралии",
@@ -273,6 +281,14 @@ const content = {
         "Что происходит после отправки заявки?",
         "После отправки анкеты и портфолио команда конфиденциально проверяет материалы, возрастное подтверждение, техническую готовность и соответствие премиальному формату. Если профиль подходит, мы связываемся приватно, даём рекомендации и обсуждаем следующий шаг или потенциальное предложение. Процесс построен так, чтобы быть быстрым, уважительным и дискретным.",
       ],
+      [
+        "Будет ли поддержка перед стартом?",
+        "Да. Сильные кандидаты не остаются один на один с процессом. Мы можем помочь с подачей портфолио, светом, графиком, границами приватности, стилем коммуникации и практической подготовкой. Цель — чтобы первые шаги были понятными, премиальными и профессионально поддержанными.",
+      ],
+      [
+        "Релокация гарантирована?",
+        "Релокация не автоматическая, и именно поэтому программа остаётся ценной. Она предназначена для моделей, которые показывают стабильность, профессионализм, сильное соответствие аудитории и готовность к более структурированной среде. Если модель подходит, предложение готовится аккуратно: с поддержкой жилья, питания и основных расходов.",
+      ],
     ],
     footerPrivacy:
       "Политика конфиденциальности: данные и файлы заявки используются только для оценки профиля, защиты безопасности и связи с кандидатом. Материалы не продаются и не публикуются без отдельного согласия.",
@@ -283,7 +299,7 @@ const content = {
 
 const englishLevels = ["Beginner", "Intermediate", "Upper-intermediate", "Advanced", "Fluent"];
 const relocationOptions = ["Yes", "Maybe", "No"];
-const navTargets = ["/info/safety", "/info/why-strawberry", "/info/relocation", "#faq"];
+const navTargets = ["/info/privacy", "/info/why-strawberry", "/info/relocation", "#faq"];
 const trustPointLinks = ["/info/nda", "/info/secure-storage", "/info/age-verification"];
 const benefitLinks = [
   "/info/premium-audience",
@@ -501,11 +517,14 @@ export default function Home() {
   }
 
   return (
-    <main>
+    <main className="site-shell">
       <header className="topbar">
         <a className="brand-lockup" href="#top" aria-label="Strawberry Glam Models">
-          <span className="brand-mark">SG</span>
-          <span>Strawberry Glam</span>
+          <span className="brand-mark">SGM</span>
+          <span className="brand-name">
+            <strong>Strawberry</strong>
+            <small>Glam Models</small>
+          </span>
         </a>
         <nav aria-label="Primary navigation">
           {t.nav.map((item, index) =>
@@ -545,10 +564,25 @@ export default function Home() {
 
       <section className="hero" id="top">
         <div className="hero-content">
-          <p className="eyebrow">Private International Representation</p>
+          <p className="eyebrow hero-eyebrow">
+            {language === "en"
+              ? "Private International Representation"
+              : "Приватное международное представительство"}
+          </p>
           <h1>Strawberry Glam Models</h1>
           <p className="hero-subtitle">{t.heroSub}</p>
           <p className="hero-text">{t.heroText}</p>
+          <div className="hero-proof" aria-label="Key standards">
+            <Link href="/info/privacy">
+              {language === "en" ? "Confidential review" : "Конфиденциальный разбор"}
+            </Link>
+            <Link href="/info/premium-clients">
+              {language === "en" ? "Closed subscriber audience" : "Закрытая подписочная аудитория"}
+            </Link>
+            <Link href="/info/relocation-program">
+              {language === "en" ? "Australia relocation track" : "Трек релокации в Австралию"}
+            </Link>
+          </div>
           <div className="hero-actions">
             <a className="primary-button" href="#apply">
               {t.heroButton}
@@ -563,7 +597,9 @@ export default function Home() {
       <section className="trust-band" id="safety">
         <div className="section-inner trust-grid">
           <div>
-            <p className="eyebrow">Trust & Safety</p>
+            <p className="eyebrow">
+              {language === "en" ? "Trust & Safety" : "Доверие и безопасность"}
+            </p>
             <h2>{t.trustTitle}</h2>
           </div>
           <p>{t.trust}</p>
@@ -580,7 +616,9 @@ export default function Home() {
       <section className="section-block" id="why">
         <div className="section-inner">
           <div className="section-heading">
-            <p className="eyebrow">Premium Model Agency</p>
+            <p className="eyebrow">
+              {language === "en" ? "Premium Model Agency" : "Премиальное модельное агентство"}
+            </p>
             <h2>{t.whyTitle}</h2>
           </div>
           <div className="benefit-grid">
@@ -598,7 +636,9 @@ export default function Home() {
       <section className="client-band">
         <div className="section-inner split-row">
           <div>
-            <p className="eyebrow">NZ & Australia</p>
+            <p className="eyebrow">
+              {language === "en" ? "NZ & Australia" : "NZ и Австралия"}
+            </p>
             <h2>{t.clientsTitle}</h2>
           </div>
           <div>
@@ -612,7 +652,9 @@ export default function Home() {
 
       <section className="relocation-band" id="relocation">
         <div className="section-inner relocation-content">
-          <p className="eyebrow">Australia Head Office</p>
+          <p className="eyebrow">
+            {language === "en" ? "Australia Head Office" : "Головной офис в Австралии"}
+          </p>
           <h2>{t.relocationTitle}</h2>
           <p>{t.relocation}</p>
           <div className="relocation-list" aria-label="Relocation support">
@@ -630,7 +672,9 @@ export default function Home() {
       <section className="section-block">
         <div className="section-inner">
           <div className="section-heading">
-            <p className="eyebrow">Selected Outcomes</p>
+            <p className="eyebrow">
+              {language === "en" ? "Selected Outcomes" : "Выборочные результаты"}
+            </p>
             <h2>{t.storiesTitle}</h2>
           </div>
           <div className="story-grid">
@@ -648,7 +692,9 @@ export default function Home() {
       <section className="details-section">
         <div className="section-inner details-layout">
           <div>
-            <p className="eyebrow">Prepared Information</p>
+            <p className="eyebrow">
+              {language === "en" ? "Prepared Information" : "Подготовленная информация"}
+            </p>
             <h2>{language === "en" ? "Clear answers before you apply" : "Подробности перед заявкой"}</h2>
           </div>
           <div className="resource-grid">
@@ -665,7 +711,9 @@ export default function Home() {
       <section className="application-section" id="apply">
         <div className="section-inner application-layout">
           <div className="application-intro">
-            <p className="eyebrow">Private Application</p>
+            <p className="eyebrow">
+              {language === "en" ? "Private Application" : "Приватная заявка"}
+            </p>
             <h2>{t.formTitle}</h2>
             <p>{t.formLead}</p>
             <div className="application-stats">
@@ -754,7 +802,7 @@ export default function Home() {
                         value={answers[key]}
                         onChange={(event) => updateAnswer(key, event.target.value)}
                       >
-                        <option value="">Select</option>
+                        <option value="">{language === "en" ? "Select" : "Выбрать"}</option>
                         {englishLevels.map((level) => (
                           <option key={level} value={level}>
                             {level}
@@ -767,7 +815,7 @@ export default function Home() {
                         value={answers[key]}
                         onChange={(event) => updateAnswer(key, event.target.value)}
                       >
-                        <option value="">Select</option>
+                        <option value="">{language === "en" ? "Select" : "Выбрать"}</option>
                         {relocationOptions.map((option) => (
                           <option key={option} value={option}>
                             {option}
@@ -878,7 +926,9 @@ export default function Home() {
       <section className="faq-section" id="faq">
         <div className="section-inner">
           <div className="section-heading">
-            <p className="eyebrow">Confidential Review</p>
+            <p className="eyebrow">
+              {language === "en" ? "Confidential Review" : "Конфиденциальное рассмотрение"}
+            </p>
             <h2>{t.faqTitle}</h2>
           </div>
           <div className="faq-list">
@@ -895,7 +945,7 @@ export default function Home() {
       <footer>
         <div className="section-inner footer-grid">
           <div>
-            <span className="brand-mark">SG</span>
+            <span className="brand-mark">SGM</span>
             <h2>Strawberry Glam Models</h2>
           </div>
           <p>
