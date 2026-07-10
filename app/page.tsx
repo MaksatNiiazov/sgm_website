@@ -144,16 +144,6 @@ const content = {
     clientsTitle: "Invitation-only premium audience",
     clientsText:
       "Our client side is designed for a closed subscription audience in New Zealand and Australia. Models are promoted selectively, with privacy standards that protect both sides of the experience.",
-    conditionsTitle: "Clear commercial terms from the start",
-    conditionsLead:
-      "Strawberry Glam Models works with a growing network of more than 150 adult models. The platform pays models 60% of the revenue generated through their work. The premium audience, structured management and consistent schedules are designed to create stronger earning potential than a broad, uncurated traffic model.",
-    conditionsStats: [
-      { value: "150+", label: "models in our network" },
-      { value: "60%", label: "of platform revenue paid to the model" },
-      { value: "Premium", label: "audience and higher-income positioning" },
-    ],
-    conditionsNote:
-      "Income is individual and is influenced by schedule, presentation, communication, audience fit and consistency. The 60% share is a platform revenue split, not a guaranteed income level.",
     relocationTitle: "Relocation Program",
     relocation:
       "Top models can receive an offer to relocate to our head office in Australia with full coverage of housing, meals, and main expenses.",
@@ -292,16 +282,6 @@ const content = {
     clientsTitle: "Закрытая премиум-аудитория по подписке",
     clientsText:
       "Клиентская сторона рассчитана на закрытую подписочную аудиторию в Новой Зеландии и Австралии. Продвижение моделей проходит выборочно, с приватными стандартами защиты обеих сторон.",
-    conditionsTitle: "Понятные коммерческие условия с самого начала",
-    conditionsLead:
-      "Strawberry Glam Models объединяет сеть из более чем 150 взрослых моделей. Платформа выплачивает модели 60% выручки, полученной от её работы. Премиальная аудитория, системный менеджмент и стабильный график помогают создавать более высокий потенциал дохода по сравнению с массовым, неотобранным трафиком.",
-    conditionsStats: [
-      { value: "150+", label: "моделей в нашей сети" },
-      { value: "60%", label: "выручки платформы получает модель" },
-      { value: "Premium", label: "аудитория и позиционирование с высоким доходом" },
-    ],
-    conditionsNote:
-      "Доход индивидуален и зависит от графика, подачи, коммуникации, соответствия аудитории и стабильности. Доля 60% является распределением выручки платформы, а не гарантией конкретного заработка.",
     relocationTitle: "Программа релокации",
     relocation:
       "Лучшие модели получают предложение о релокации в головной офис в Австралии с полной оплатой жилья, питания и основных расходов.",
@@ -870,27 +850,6 @@ export default function Home() {
               {language === "en" ? "Read client standards" : "Открыть стандарты аудитории"}
             </a>
           </div>
-        </div>
-      </section>
-
-      <section className="conditions-band">
-        <div className="section-inner conditions-layout">
-          <div className="conditions-heading">
-            <p className="eyebrow">
-              {language === "en" ? "Terms & Earnings" : "Условия и доход"}
-            </p>
-            <h2>{t.conditionsTitle}</h2>
-            <p>{t.conditionsLead}</p>
-          </div>
-          <div className="conditions-grid">
-            {t.conditionsStats.map((stat) => (
-              <article key={stat.value + stat.label}>
-                <strong>{stat.value}</strong>
-                <span>{stat.label}</span>
-              </article>
-            ))}
-          </div>
-          <p className="conditions-note">{t.conditionsNote}</p>
         </div>
       </section>
 
