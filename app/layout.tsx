@@ -22,8 +22,9 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
+    icon: [{ url: "/brand-icon.svg", type: "image/svg+xml" }],
+    shortcut: [{ url: "/brand-icon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/brand-icon.svg", type: "image/svg+xml" }],
   },
   openGraph: {
     title: "Strawberry Glam Models",
