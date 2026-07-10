@@ -68,7 +68,7 @@ export async function POST(request: Request) {
       )
       .bind(
         applicationId,
-        personal.fullName.trim(),
+        personal.fullName?.trim() ?? "",
         age,
         personal.countryCity?.trim() ?? "",
         personal.email?.trim() ?? "",
