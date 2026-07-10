@@ -595,21 +595,6 @@ export default function Home() {
   }
 
   function canAdvance() {
-    if (step === 0) {
-      return (
-        personal.fullName.trim() &&
-        Number(personal.age) >= 18 &&
-        personal.countryCity.trim() &&
-        personal.email.trim() &&
-        personal.messenger.trim() &&
-        personal.timezone.trim()
-      );
-    }
-
-    if (step === 1) {
-      return Object.values(answers).every((value) => value.trim().length > 0);
-    }
-
     return true;
   }
 
@@ -974,7 +959,6 @@ export default function Home() {
               <div className="form-grid">
                 <Field label={t.labels.fullName}>
                   <input
-                    required
                     value={personal.fullName}
                     onChange={(event) => updatePersonal("fullName", event.target.value)}
                   />
@@ -984,7 +968,6 @@ export default function Home() {
                     aria-invalid={validationError === "personalAge"}
                     className={validationError === "personalAge" ? "input-error" : ""}
                     min="18"
-                    required
                     type="number"
                     value={personal.age}
                     onChange={(event) => updatePersonal("age", event.target.value)}
@@ -992,14 +975,12 @@ export default function Home() {
                 </Field>
                 <Field label={t.labels.countryCity}>
                   <input
-                    required
                     value={personal.countryCity}
                     onChange={(event) => updatePersonal("countryCity", event.target.value)}
                   />
                 </Field>
                 <Field label={t.labels.email}>
                   <input
-                    required
                     type="email"
                     value={personal.email}
                     onChange={(event) => updatePersonal("email", event.target.value)}
@@ -1007,14 +988,12 @@ export default function Home() {
                 </Field>
                 <Field label={t.labels.messenger}>
                   <input
-                    required
                     value={personal.messenger}
                     onChange={(event) => updatePersonal("messenger", event.target.value)}
                   />
                 </Field>
                 <Field label={t.labels.timezone}>
                   <input
-                    required
                     value={personal.timezone}
                     onChange={(event) => updatePersonal("timezone", event.target.value)}
                   />
@@ -1028,8 +1007,7 @@ export default function Home() {
                   <Field key={key} label={t.questions[key]}>
                     {key === "englishLevel" ? (
                       <select
-                        required
-                        value={answers[key]}
+                            value={answers[key]}
                         onChange={(event) => updateAnswer(key, event.target.value)}
                       >
                         <option value="">{language === "en" ? "Select" : "Выбрать"}</option>
@@ -1041,8 +1019,7 @@ export default function Home() {
                       </select>
                     ) : key === "relocationOpen" ? (
                       <select
-                        required
-                        value={answers[key]}
+                            value={answers[key]}
                         onChange={(event) => updateAnswer(key, event.target.value)}
                       >
                         <option value="">{language === "en" ? "Select" : "Выбрать"}</option>
@@ -1054,8 +1031,7 @@ export default function Home() {
                       </select>
                     ) : (
                       <textarea
-                        required
-                        rows={key === "additionalInfo" ? 4 : 3}
+                            rows={key === "additionalInfo" ? 4 : 3}
                         value={answers[key]}
                         onChange={(event) => updateAnswer(key, event.target.value)}
                       />
