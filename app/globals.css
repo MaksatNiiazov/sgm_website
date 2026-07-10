@@ -967,8 +967,11 @@ footer {
   grid-template-columns: 20px 1fr;
   gap: 10px;
   align-items: start;
+  border: 1px solid transparent;
   color: rgba(17, 16, 15, 0.72);
   line-height: 1.5;
+  padding: 8px 10px;
+  transition: border-color 160ms ease, background 160ms ease;
 }
 
 .checkbox-line input {
@@ -977,37 +980,87 @@ footer {
   accent-color: var(--ink);
 }
 
+.checkbox-line.has-error {
+  border-color: rgba(200, 30, 108, 0.7);
+  background: rgba(200, 30, 108, 0.08);
+  color: #6e1037;
+}
+
+.checkbox-line.has-error input {
+  outline: 2px solid rgba(200, 30, 108, 0.42);
+  outline-offset: 2px;
+}
+
 .form-status {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
   margin-top: 18px;
-  border: 1px solid rgba(17, 16, 15, 0.16);
+  border: 1px solid rgba(17, 16, 15, 0.18);
   background: #fff;
   color: var(--ink);
   padding: 16px 18px;
   box-shadow: 0 10px 26px rgba(17, 16, 15, 0.08);
 }
 
-.form-status > div {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
+.form-status-icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1;
 }
 
-.form-status span {
-  color: var(--ink);
-  font-weight: 700;
+.form-status-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.form-status-copy strong {
+  color: currentColor;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.form-status-copy span {
+  color: currentColor;
+  font-size: 0.9rem;
+  font-weight: 500;
   line-height: 1.55;
 }
 
-.form-status.success {
-  border-color: rgba(38, 119, 81, 0.42);
-  background: #eef8f1;
-  color: #174d35;
-  box-shadow: inset 4px 0 0 #267751, 0 10px 26px rgba(38, 119, 81, 0.1);
+.form-status-copy em {
+  color: currentColor;
+  font-size: 0.8rem;
+  font-style: normal;
+  font-weight: 700;
 }
 
-.form-status.success span {
-  color: #174d35;
+.form-status-close {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: currentColor;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.form-status.success {
+  border-color: rgba(38, 119, 81, 0.46);
+  background: #e9f7ed;
+  color: #165337;
+  box-shadow: inset 4px 0 0 #267751, 0 10px 26px rgba(38, 119, 81, 0.1);
 }
 
 .form-status.working {
@@ -1017,29 +1070,21 @@ footer {
   box-shadow: inset 4px 0 0 var(--ink), 0 10px 26px rgba(17, 16, 15, 0.08);
 }
 
-.form-status.working span {
-  color: var(--ink);
-}
-
 .form-status.error,
 .admin-message {
-  border-color: rgba(200, 30, 108, 0.45);
-  background: rgba(200, 30, 108, 0.1);
+  border-color: rgba(200, 30, 108, 0.62);
+  background: #fff0f6;
 }
 
 .form-status.error {
-  color: #7e123d;
-  font-weight: 700;
-  box-shadow: inset 4px 0 0 var(--berry), 0 10px 26px rgba(200, 30, 108, 0.1);
-}
-
-.form-status.error span {
-  color: #7e123d;
+  color: #77123d;
+  box-shadow: inset 4px 0 0 var(--strawberry), 0 10px 26px rgba(200, 30, 108, 0.12);
 }
 
 progress {
+  grid-column: 2 / -1;
   width: 100%;
-  margin-top: 12px;
+  margin-top: 2px;
   accent-color: var(--ink);
 }
 
