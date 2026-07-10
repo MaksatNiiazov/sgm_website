@@ -980,6 +980,12 @@ footer {
   accent-color: var(--ink);
 }
 
+.input-error {
+  border-color: var(--strawberry) !important;
+  background: #fff0f6 !important;
+  box-shadow: 0 0 0 3px rgba(200, 30, 108, 0.13);
+}
+
 .checkbox-line.has-error {
   border-color: rgba(200, 30, 108, 0.7);
   background: rgba(200, 30, 108, 0.08);
