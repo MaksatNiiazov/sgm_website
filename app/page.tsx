@@ -1,6 +1,6 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 "use client";
 
-import Link from "next/link";
 import { type FormEvent, type ReactNode, useMemo, useState } from "react";
 
 type Language = "en" | "ru";
@@ -529,9 +529,9 @@ export default function Home() {
         <nav aria-label="Primary navigation">
           {t.nav.map((item, index) =>
             navTargets[index].startsWith("/") ? (
-              <Link href={navTargets[index]} key={item}>
+              <a href={navTargets[index]} key={item}>
                 {item}
-              </Link>
+              </a>
             ) : (
               <a href={navTargets[index]} key={item}>
                 {item}
@@ -573,23 +573,23 @@ export default function Home() {
           <p className="hero-subtitle">{t.heroSub}</p>
           <p className="hero-text">{t.heroText}</p>
           <div className="hero-proof" aria-label="Key standards">
-            <Link href="/info/privacy">
+            <a href="/info/privacy">
               {language === "en" ? "Confidential review" : "Конфиденциальный разбор"}
-            </Link>
-            <Link href="/info/premium-clients">
+            </a>
+            <a href="/info/premium-clients">
               {language === "en" ? "Closed subscriber audience" : "Закрытая подписочная аудитория"}
-            </Link>
-            <Link href="/info/relocation-program">
+            </a>
+            <a href="/info/relocation-program">
               {language === "en" ? "Australia relocation track" : "Трек релокации в Австралию"}
-            </Link>
+            </a>
           </div>
           <div className="hero-actions">
             <a className="primary-button" href="#apply">
               {t.heroButton}
             </a>
-            <Link className="secondary-button" href="/info/privacy">
+            <a className="secondary-button" href="/info/privacy">
               {language === "en" ? "Privacy standards" : "Стандарты приватности"}
-            </Link>
+            </a>
           </div>
         </div>
       </section>
@@ -605,9 +605,9 @@ export default function Home() {
           <p>{t.trust}</p>
           <div className="trust-points">
             {t.trustPoints.map((point, index) => (
-              <Link href={trustPointLinks[index]} key={point}>
+              <a href={trustPointLinks[index]} key={point}>
                 {point}
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -623,11 +623,11 @@ export default function Home() {
           </div>
           <div className="benefit-grid">
             {t.why.map((item, index) => (
-              <Link className="benefit-card" href={benefitLinks[index]} key={item}>
+              <a className="benefit-card" href={benefitLinks[index]} key={item}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <p>{item}</p>
                 <small>{language === "en" ? "Read details" : "Подробнее"}</small>
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -643,9 +643,9 @@ export default function Home() {
           </div>
           <div>
             <p>{t.clientsText}</p>
-            <Link className="inline-link" href="/info/client-standards">
+            <a className="inline-link" href="/info/client-standards">
               {language === "en" ? "Read client standards" : "Открыть стандарты аудитории"}
-            </Link>
+            </a>
           </div>
         </div>
       </section>
@@ -659,11 +659,11 @@ export default function Home() {
           <p>{t.relocation}</p>
           <div className="relocation-list" aria-label="Relocation support">
             {["Housing", "Meals", "Main expenses", "Management"].map((item, index) => (
-              <Link href={relocationSupportLinks[index]} key={item}>
+              <a href={relocationSupportLinks[index]} key={item}>
                 {language === "en"
                   ? item
                   : ["Жильё", "Питание", "Основные расходы", "Менеджмент"][index]}
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -679,11 +679,11 @@ export default function Home() {
           </div>
           <div className="story-grid">
             {t.stories.map((story) => (
-              <Link className="story-card" href="/info/success-stories" key={story.name}>
+              <a className="story-card" href="/info/success-stories" key={story.name}>
                 <strong>{story.stat}</strong>
                 <p>{story.copy}</p>
                 <span>{story.name}</span>
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -699,10 +699,10 @@ export default function Home() {
           </div>
           <div className="resource-grid">
             {detailCards[language].map((card) => (
-              <Link className="resource-card" href={card.href} key={card.href}>
+              <a className="resource-card" href={card.href} key={card.href}>
                 <span>{card.title}</span>
                 <p>{card.copy}</p>
-              </Link>
+              </a>
             ))}
           </div>
         </div>
@@ -718,11 +718,11 @@ export default function Home() {
             <p>{t.formLead}</p>
             <div className="application-stats">
               {["8-15 photos", "2-5 videos", "NDA review"].map((item, index) => (
-                <Link href={applicationStatLinks[index]} key={item}>
+                <a href={applicationStatLinks[index]} key={item}>
                   {language === "en"
                     ? item
                     : ["8-15 фото", "2-5 видео", "NDA-проверка"][index]}
-                </Link>
+                </a>
               ))}
             </div>
           </div>
@@ -949,14 +949,14 @@ export default function Home() {
             <h2>Strawberry Glam Models</h2>
           </div>
           <p>
-            <Link className="text-link" href="/info/privacy">
+            <a className="text-link" href="/info/privacy">
               {t.footerPrivacy}
-            </Link>
+            </a>
           </p>
           <p>
-            <Link className="text-link" href="/info/age-verification">
+            <a className="text-link" href="/info/age-verification">
               {t.footerAge}
-            </Link>
+            </a>
           </p>
         </div>
       </footer>
