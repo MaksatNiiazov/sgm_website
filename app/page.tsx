@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { type FormEvent, type ReactNode, useMemo, useState } from "react";
 
 type Language = "en" | "ru";
@@ -139,19 +140,23 @@ const content = {
     faq: [
       [
         "Is my identity protected?",
-        "Yes. Applicant data is stored privately, reviewed by authorized staff only, and handled under strict confidentiality standards.",
+        "Yes. Privacy is built into the way we review, onboard and represent models. Your application is handled by a small authorized team, portfolio files are kept in protected storage, and sensitive details are never used for promotion without explicit approval. We also use confidentiality agreements and careful internal access rules so the process feels calm, professional and controlled from the first contact.",
       ],
       [
         "Do I need previous webcam experience?",
-        "No. Experience helps, but presentation, consistency, privacy readiness and communication matter more.",
+        "No. Previous experience can be useful, but it is not required. We look for presentation, consistency, communication, privacy readiness and the ability to follow a premium positioning strategy. If your profile has potential, the team can guide you through lighting, schedule planning, platform etiquette and portfolio improvements.",
       ],
       [
-        "Is relocation guaranteed?",
-        "No. Relocation is offered to selected top models after performance, professionalism and compliance review.",
+        "How does the relocation program work?",
+        "Relocation is a selective opportunity for top-performing models who show strong consistency, professionalism and long-term fit. When a model qualifies, we can prepare a private offer for relocation to our Australian head office, including support for housing, meals and main living expenses. The goal is to make the transition organized, respectful and focused on performance growth.",
       ],
       [
-        "Are earnings guaranteed?",
-        "No. Earnings depend on schedule, consistency, content quality, market fit and audience response.",
+        "What can influence earnings?",
+        "Strong earnings usually come from a combination of consistency, polished presentation, clear boundaries, good communication, high-quality media and a schedule that fits premium audience demand. We do not present income as a guarantee, but we do provide structure, management support and positioning designed to help serious models build stronger results.",
+      ],
+      [
+        "What happens after I apply?",
+        "After your application and portfolio are received, the review team checks your materials, safety readiness, age confirmation and fit for the premium audience. If your profile is suitable, we contact you privately with next steps, recommendations and a potential offer. The process is designed to be discreet, fast and respectful.",
       ],
     ],
     footerPrivacy:
@@ -249,20 +254,24 @@ const content = {
     faqTitle: "FAQ",
     faq: [
       [
-        "Моя личность защищена?",
-        "Да. Данные заявок хранятся приватно, просматриваются только авторизованной командой и обрабатываются по строгим стандартам конфиденциальности.",
+        "Моя личность действительно защищена?",
+        "Да. Конфиденциальность встроена в процесс рассмотрения, онбординга и дальнейшего сопровождения. Анкету видит только ограниченная авторизованная команда, портфолио хранится в защищённом хранилище, а личные данные и материалы не используются для продвижения без отдельного согласия. Мы работаем через NDA, аккуратные правила доступа и приватную коммуникацию, чтобы весь процесс ощущался спокойно, профессионально и безопасно.",
       ],
       [
-        "Нужен ли опыт вебкам-моделью?",
-        "Нет. Опыт помогает, но важнее презентация, стабильность, готовность к приватности и коммуникация.",
+        "Можно ли подать заявку без опыта?",
+        "Да, опыт не обязателен. Он может быть плюсом, но мы в первую очередь смотрим на презентацию, стабильность, коммуникацию, готовность соблюдать приватность и потенциал для премиального позиционирования. Если профиль перспективный, команда поможет с рекомендациями по свету, графику, портфолио, подаче и профессиональной подготовке.",
       ],
       [
-        "Релокация гарантирована?",
-        "Нет. Релокация предлагается избранным топ-моделям после проверки результатов, профессионализма и соблюдения требований.",
+        "Как работает программа релокации?",
+        "Релокация — это отдельная возможность для сильных моделей, которые показывают стабильность, профессионализм и долгосрочный потенциал. Если модель подходит, мы готовим приватное предложение по переезду в головной офис в Австралии с поддержкой жилья, питания и основных расходов. Цель — сделать переход организованным, комфортным и ориентированным на рост дохода.",
       ],
       [
-        "Доход гарантирован?",
-        "Нет. Доход зависит от графика, стабильности, качества материалов, соответствия рынку и реакции аудитории.",
+        "От чего зависит заработок?",
+        "Высокий доход обычно складывается из регулярности, качественной визуальной подачи, хорошей коммуникации, сильного портфолио, понятных границ и графика, который совпадает с активностью премиальной аудитории. Мы не подаём доход как гарантию, но даём структуру, менеджмент, продвижение и профессиональные рекомендации, которые помогают серьёзным моделям двигаться к более сильным результатам.",
+      ],
+      [
+        "Что происходит после отправки заявки?",
+        "После отправки анкеты и портфолио команда конфиденциально проверяет материалы, возрастное подтверждение, техническую готовность и соответствие премиальному формату. Если профиль подходит, мы связываемся приватно, даём рекомендации и обсуждаем следующий шаг или потенциальное предложение. Процесс построен так, чтобы быть быстрым, уважительным и дискретным.",
       ],
     ],
     footerPrivacy:
@@ -274,6 +283,60 @@ const content = {
 
 const englishLevels = ["Beginner", "Intermediate", "Upper-intermediate", "Advanced", "Fluent"];
 const relocationOptions = ["Yes", "Maybe", "No"];
+const navTargets = ["/info/safety", "/info/why-strawberry", "/info/relocation", "#faq"];
+const trustPointLinks = ["/info/nda", "/info/secure-storage", "/info/age-verification"];
+const benefitLinks = [
+  "/info/premium-audience",
+  "/info/earnings",
+  "/info/model-support",
+  "/info/legal-protection",
+  "/info/relocation-program",
+  "/info/flexible-schedule",
+];
+const relocationSupportLinks = [
+  "/info/housing-support",
+  "/info/meals-support",
+  "/info/expenses-support",
+  "/info/management-support",
+];
+const applicationStatLinks = ["/info/portfolio-guide", "/info/video-guide", "/info/nda"];
+
+const detailCards = {
+  en: [
+    {
+      title: "Privacy standards",
+      copy: "How applications, files, NDA rules and internal access are handled.",
+      href: "/info/privacy",
+    },
+    {
+      title: "Premium audience",
+      copy: "Why the client side is curated around NZ and Australian subscribers.",
+      href: "/info/premium-clients",
+    },
+    {
+      title: "Application guide",
+      copy: "What a strong portfolio includes and how review decisions are made.",
+      href: "/info/application-process",
+    },
+  ],
+  ru: [
+    {
+      title: "Стандарты приватности",
+      copy: "Как обрабатываются анкеты, файлы, NDA и внутренний доступ.",
+      href: "/info/privacy",
+    },
+    {
+      title: "Премиум-аудитория",
+      copy: "Почему клиентская сторона сфокусирована на подписчиках NZ и Австралии.",
+      href: "/info/premium-clients",
+    },
+    {
+      title: "Гайд по заявке",
+      copy: "Что входит в сильное портфолио и как проходит рассмотрение.",
+      href: "/info/application-process",
+    },
+  ],
+};
 
 export default function Home() {
   const [language, setLanguage] = useState<Language>("en");
@@ -445,14 +508,17 @@ export default function Home() {
           <span>Strawberry Glam</span>
         </a>
         <nav aria-label="Primary navigation">
-          {t.nav.map((item, index) => (
-            <a
-              key={item}
-              href={["#safety", "#why", "#relocation", "#faq"][index]}
-            >
-              {item}
-            </a>
-          ))}
+          {t.nav.map((item, index) =>
+            navTargets[index].startsWith("/") ? (
+              <Link href={navTargets[index]} key={item}>
+                {item}
+              </Link>
+            ) : (
+              <a href={navTargets[index]} key={item}>
+                {item}
+              </a>
+            )
+          )}
         </nav>
         <div className="topbar-actions">
           <div className="language-switch" aria-label="Language switcher">
@@ -487,9 +553,9 @@ export default function Home() {
             <a className="primary-button" href="#apply">
               {t.heroButton}
             </a>
-            <a className="secondary-button" href="#safety">
+            <Link className="secondary-button" href="/info/privacy">
               {language === "en" ? "Privacy standards" : "Стандарты приватности"}
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -502,8 +568,10 @@ export default function Home() {
           </div>
           <p>{t.trust}</p>
           <div className="trust-points">
-            {t.trustPoints.map((point) => (
-              <span key={point}>{point}</span>
+            {t.trustPoints.map((point, index) => (
+              <Link href={trustPointLinks[index]} key={point}>
+                {point}
+              </Link>
             ))}
           </div>
         </div>
@@ -517,10 +585,11 @@ export default function Home() {
           </div>
           <div className="benefit-grid">
             {t.why.map((item, index) => (
-              <article className="benefit-card" key={item}>
+              <Link className="benefit-card" href={benefitLinks[index]} key={item}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <p>{item}</p>
-              </article>
+                <small>{language === "en" ? "Read details" : "Подробнее"}</small>
+              </Link>
             ))}
           </div>
         </div>
@@ -532,7 +601,12 @@ export default function Home() {
             <p className="eyebrow">NZ & Australia</p>
             <h2>{t.clientsTitle}</h2>
           </div>
-          <p>{t.clientsText}</p>
+          <div>
+            <p>{t.clientsText}</p>
+            <Link className="inline-link" href="/info/client-standards">
+              {language === "en" ? "Read client standards" : "Открыть стандарты аудитории"}
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -542,10 +616,13 @@ export default function Home() {
           <h2>{t.relocationTitle}</h2>
           <p>{t.relocation}</p>
           <div className="relocation-list" aria-label="Relocation support">
-            <span>Housing</span>
-            <span>Meals</span>
-            <span>Main expenses</span>
-            <span>Management</span>
+            {["Housing", "Meals", "Main expenses", "Management"].map((item, index) => (
+              <Link href={relocationSupportLinks[index]} key={item}>
+                {language === "en"
+                  ? item
+                  : ["Жильё", "Питание", "Основные расходы", "Менеджмент"][index]}
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -558,11 +635,28 @@ export default function Home() {
           </div>
           <div className="story-grid">
             {t.stories.map((story) => (
-              <article className="story-card" key={story.name}>
+              <Link className="story-card" href="/info/success-stories" key={story.name}>
                 <strong>{story.stat}</strong>
                 <p>{story.copy}</p>
                 <span>{story.name}</span>
-              </article>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="details-section">
+        <div className="section-inner details-layout">
+          <div>
+            <p className="eyebrow">Prepared Information</p>
+            <h2>{language === "en" ? "Clear answers before you apply" : "Подробности перед заявкой"}</h2>
+          </div>
+          <div className="resource-grid">
+            {detailCards[language].map((card) => (
+              <Link className="resource-card" href={card.href} key={card.href}>
+                <span>{card.title}</span>
+                <p>{card.copy}</p>
+              </Link>
             ))}
           </div>
         </div>
@@ -575,9 +669,13 @@ export default function Home() {
             <h2>{t.formTitle}</h2>
             <p>{t.formLead}</p>
             <div className="application-stats">
-              <span>8-15 photos</span>
-              <span>2-5 videos</span>
-              <span>NDA review</span>
+              {["8-15 photos", "2-5 videos", "NDA review"].map((item, index) => (
+                <Link href={applicationStatLinks[index]} key={item}>
+                  {language === "en"
+                    ? item
+                    : ["8-15 фото", "2-5 видео", "NDA-проверка"][index]}
+                </Link>
+              ))}
             </div>
           </div>
 
@@ -800,8 +898,16 @@ export default function Home() {
             <span className="brand-mark">SG</span>
             <h2>Strawberry Glam Models</h2>
           </div>
-          <p>{t.footerPrivacy}</p>
-          <p>{t.footerAge}</p>
+          <p>
+            <Link className="text-link" href="/info/privacy">
+              {t.footerPrivacy}
+            </Link>
+          </p>
+          <p>
+            <Link className="text-link" href="/info/age-verification">
+              {t.footerAge}
+            </Link>
+          </p>
         </div>
       </footer>
     </main>
