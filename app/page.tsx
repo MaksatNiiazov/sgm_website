@@ -582,6 +582,11 @@ export default function Home() {
     setPersonal((current) => ({ ...current, [key]: value }));
   }
 
+  function clearStatus() {
+    setValidationError(null);
+    setStatus({ type: "idle", message: "", progress: 0 });
+  }
+
   function updateAnswer(key: keyof Answers, value: string) {
     setAnswers((current) => ({ ...current, [key]: value }));
   }
@@ -1114,16 +1119,18 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="file-summary">{fileSummary}</div>
-                <label className="checkbox-line">
+                <label className={`checkbox-line ${validationError === "age" ? "has-error" : ""}`}>
                   <input
+                    aria-invalid={validationError === "age"}
                     checked={legalAgeConfirmed}
                     onChange={(event) => setLegalAgeConfirmed(event.target.checked)}
                     type="checkbox"
                   />
                   <span>{t.labels.ageConsent}</span>
                 </label>
-                <label className="checkbox-line">
+                <label className={`checkbox-line ${validationError === "privacy" ? "has-error" : ""}`}>
                   <input
+                    aria-invalid={validationError === "privacy"}
                     checked={privacyAccepted}
                     onChange={(event) => setPrivacyAccepted(event.target.checked)}
                     type="checkbox"
@@ -1139,15 +1146,37 @@ export default function Home() {
                 role={status.type === "error" ? "alert" : "status"}
                 aria-live="polite"
               >
-                <div>
+                <span className="form-status-icon" aria-hidden="true">
+                  {status.type === "error" ? "!" : status.type === "success" ? "✓" : "…"}
+                </span>
+                <div className="form-status-copy">
+                  <strong>
+                    {status.type === "error"
+                      ? language === "en"
+                        ? "Please check the highlighted item"
+                        : "Проверьте выделенный пункт"
+                      : status.type === "success"
+                        ? language === "en"
+                          ? "Application received"
+                          : "Заявка принята"
+                        : language === "en"
+                          ? "Sending your application"
+                          : "Отправляем заявку"}
+                  </strong>
                   <span>{status.message}</span>
-                  {status.type === "working" && (
-                    <strong>{Math.max(1, status.progress)}%</strong>
-                  )}
+                  {status.type === "working" && <em>{Math.max(1, status.progress)}%</em>}
                 </div>
-                {status.type === "working" && (
-                  <progress max="100" value={status.progress} />
+                {status.type === "error" && (
+                  <button
+                    className="form-status-close"
+                    aria-label={language === "en" ? "Dismiss error" : "Закрыть сообщение"}
+                    type="button"
+                    onClick={clearStatus}
+                  >
+                    ×
+                  </button>
                 )}
+                {status.type === "working" && <progress max="100" value={status.progress} />}
               </div>
             )}
 
