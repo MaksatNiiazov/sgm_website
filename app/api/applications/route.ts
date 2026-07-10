@@ -23,10 +23,6 @@ export async function POST(request: Request) {
     const answers = payload.answers ?? {};
     const age = Number(personal.age);
 
-    if (!personal.fullName?.trim()) {
-      return Response.json({ error: "Full name is required." }, { status: 400 });
-    }
-
     if (!Number.isFinite(age) || age < 18 || !payload.legalAgeConfirmed) {
       return Response.json(
         { error: "Applicants must be 18+ and confirm age verification readiness." },
@@ -37,40 +33,6 @@ export async function POST(request: Request) {
     if (!payload.privacyAccepted) {
       return Response.json(
         { error: "Privacy consent is required before submitting materials." },
-        { status: 400 }
-      );
-    }
-
-    const requiredPersonal = [
-      personal.countryCity,
-      personal.email,
-      personal.messenger,
-      personal.timezone,
-    ];
-
-    if (requiredPersonal.some((value) => !value?.trim())) {
-      return Response.json(
-        { error: "Please complete all personal information fields." },
-        { status: 400 }
-      );
-    }
-
-    const requiredAnswers = [
-      "motivation",
-      "experience",
-      "hoursPerWeek",
-      "preferredSchedule",
-      "contentComfort",
-      "strongestFeatures",
-      "equipment",
-      "englishLevel",
-      "relocationOpen",
-      "additionalInfo",
-    ];
-
-    if (requiredAnswers.some((key) => !answers[key]?.trim())) {
-      return Response.json(
-        { error: "Please complete all questionnaire fields." },
         { status: 400 }
       );
     }
@@ -108,21 +70,21 @@ export async function POST(request: Request) {
         applicationId,
         personal.fullName.trim(),
         age,
-        personal.countryCity?.trim(),
-        personal.email?.trim(),
-        personal.messenger?.trim(),
-        personal.timezone?.trim(),
+        personal.countryCity?.trim() ?? "",
+        personal.email?.trim() ?? "",
+        personal.messenger?.trim() ?? "",
+        personal.timezone?.trim() ?? "",
         payload.language === "ru" ? "ru" : "en",
-        answers.motivation?.trim(),
-        answers.experience?.trim(),
-        answers.hoursPerWeek?.trim(),
-        answers.preferredSchedule?.trim(),
-        answers.contentComfort?.trim(),
-        answers.strongestFeatures?.trim(),
-        answers.equipment?.trim(),
-        answers.englishLevel?.trim(),
-        answers.relocationOpen?.trim(),
-        answers.additionalInfo?.trim(),
+        answers.motivation?.trim() ?? "",
+        answers.experience?.trim() ?? "",
+        answers.hoursPerWeek?.trim() ?? "",
+        answers.preferredSchedule?.trim() ?? "",
+        answers.contentComfort?.trim() ?? "",
+        answers.strongestFeatures?.trim() ?? "",
+        answers.equipment?.trim() ?? "",
+        answers.englishLevel?.trim() ?? "",
+        answers.relocationOpen?.trim() ?? "",
+        answers.additionalInfo?.trim() ?? "",
         1,
         1,
         "draft"
