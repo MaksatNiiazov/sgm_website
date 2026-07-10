@@ -507,6 +507,7 @@ export default function Home() {
   const [videos, setVideos] = useState<(File | null)[]>([null]);
   const [legalAgeConfirmed, setLegalAgeConfirmed] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [validationError, setValidationError] = useState<"age" | "privacy" | null>(null);
   const [status, setStatus] = useState<{
     type: "idle" | "working" | "success" | "error";
     message: string;
@@ -517,10 +518,26 @@ export default function Home() {
   const consentReady = Number(personal.age) >= 18 && legalAgeConfirmed && privacyAccepted;
 
   useEffect(() => {
-    if (status.type === "error" && consentReady) {
+    if (status.type !== "error") {
+      return;
+    }
+
+    const ageReady = Number(personal.age) >= 18 && legalAgeConfirmed;
+    const errorIsResolved =
+      (validationError === "age" && ageReady) ||
+      (validationError === "privacy" && privacyAccepted);
+
+    if (errorIsResolved) {
+      setValidationError(null);
       setStatus({ type: "idle", message: "", progress: 0 });
     }
-  }, [consentReady, status.type]);
+  }, [
+    legalAgeConfirmed,
+    personal.age,
+    privacyAccepted,
+    status.type,
+    validationError,
+  ]);
 
 
   useEffect(() => {
@@ -593,8 +610,10 @@ export default function Home() {
   async function submitApplication(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus({ type: "idle", message: "", progress: 0 });
+    setValidationError(null);
 
     if (Number(personal.age) < 18 || !legalAgeConfirmed) {
+      setValidationError("age");
       setStatus({
         type: "error",
         message:
@@ -607,6 +626,7 @@ export default function Home() {
     }
 
     if (!privacyAccepted) {
+      setValidationError("privacy");
       setStatus({
         type: "error",
         message:
